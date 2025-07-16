@@ -4,7 +4,7 @@ from datetime import datetime
 
 DATA_DIR = "data"
 
-# ✅ FIX: Ensure 'data' exists and is a directory
+# ✅ FIXED — Don't crash if "data" exists as a file
 if not os.path.exists(DATA_DIR):
     os.makedirs(DATA_DIR)
 elif not os.path.isdir(DATA_DIR):
