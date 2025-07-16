@@ -13,7 +13,7 @@ def save_messages_to_json(group_name, messages):
     Save messages from a group to a JSON file with timestamped entries.
     """
     filename = os.path.join(DATA_DIR, f"{group_name}_messages.json")
-    
+
     timestamped_messages = []
     for message in messages:
         timestamped_messages.append({
