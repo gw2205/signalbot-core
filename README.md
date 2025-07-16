@@ -1,23 +1,51 @@
 # SignalBot Core
 
-SignalBot Core is a real-time sentiment analysis and signal execution engine for crypto trading.  
-It scans Telegram groups, YouTube traders, and other sentiment sources to identify high-probability setups based on NLP scoring, market volatility, and live MEXC data.
+SignalBot Core is a minimalist crypto signal engine designed for high-leverage scalping (x25/x50).  
+It scans live market sentiment from Telegram, YouTube, and other data sources, validates signal strength using volatility filters, and pushes real-time alerts to your Telegram bot.
 
-## Features
-- 🔍 Sentiment scoring based on keywords
-- 📊 Volatility filtering with custom thresholds
-- 🧠 Strategy execution engine (TP/SL, trail stops, learning)
-- 📡 Signal validation and Telegram push
-- 🧪 Fully testable and modular
+---
+## ⚙️ Core Features
 
-## Project Structure
-- `sentibot/` – Sentiment analysis engine
-- `signalbot/` – Signal scoring and execution logic
-- `guard/` – Macro trend and volatility monitors
-- `data/` – All real source files (Telegram, YouTube, keywords, etc.)
-- `main.py` – FastAPI app entrypoint
+- ✅ Sentiment score calculation using keyword engine  
+- ✅ Signal structure support for Telegram/YouTube/Reddit posts  
+- ✅ VolatilityGuard: Filters based on token price volatility  
+- ✅ Scalp-friendly TP/SL system with confidence scoring  
+- ✅ FastAPI endpoint (`main.py`) for live monitoring and API  
+- ✅ Telegram bot integration for automated push  
 
 ---
 
-🚀 Built for high-leverage crypto scalping (x25/x50) with real data  
-👤 Developed by a private crypto trader
+## 📁 Project Structure
+
+signalbot-core/
+│
+├── kaizennew/
+│ ├── sentibot/ # Keyword-based sentiment analysis engine
+│ ├── signalbot/ # Signal evaluator and executor
+│ ├── guard/ # Volatility + macro trend filters
+│ └── mexc/ # Live token price fetcher (via MEXC API)
+│
+├── data/ # Curated source lists (YouTube, Telegram, etc.)
+├── main.py # FastAPI server to run the SignalBot
+├── test_imports.py # QA script to validate all module imports
+---
+
+## ⚡ Quick Start
+
+Clone the repo and run with FastAPI and Uvicorn:
+
+```bash
+git clone https://github.com/YOUR_USERNAME/signalbot-core.git
+cd signalbot-core
+PYTHONPATH=. python3 -m uvicorn main:app --reload
+🚨 New Signal: PEPEUSDT
+🟢 Long Signal | Sentiment Score: 0.91
+🎯 TP1–TP4: 0.000033, 0.000036, 0.000039, 0.000041
+🛑 SL: 0.000028 | Leverage: x25
+Source: @USABitcoinArmy
+---
+
+## 📜 License
+
+MIT License  
+Created and maintained by **Gai Winter**
