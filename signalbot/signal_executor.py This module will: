@@ -1,24 +1,33 @@
 # signalbot/signal_executor.py
 
-from signalbot.signal_engine import Signal
-from telegram.push import send_signal_to_telegram
+import os
+from dotenv import load_dotenv
+import requests
 
-# Example signal (you can dynamically create these later)
-signal = Signal(
-    token="BTC",
-    direction="long",
-    tp=[0.00023, 0.00036, 0.00093, 0.00041],
-    sl=0.000088,
-    leverage=25,
-    source="@USABitcoinArmy",
-    score=0.91
-)
+load_dotenv()
 
-# Send it to Telegram
-message = signal.formatted()
-success = send_signal_to_telegram(message)
+BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
-if success:
-    print("✅ Signal pushed successfully!")
-else:
-    print("❌ Failed to push signal.")
+def send_signal_to_telegram(message: str) -> bool:
+    if not BOT_TOKEN or not CHAT_ID:
+        print("❌ Missing Telegram credentials.")
+        return False
+
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    payload = {
+        "chat_id": CHAT_ID,
+        "text": message,
+        "parse_mode": "Markdown"
+    }
+
+    try:
+        response = requests.post(url, data=payload)
+        if response.status_code == 200:
+            return True
+        else:
+            print(f"⚠️ Telegram error: {response.text}")
+            return False
+    except Exception as e:
+        print(f"❌ Failed to send message: {e}")
+        return False
