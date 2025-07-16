@@ -1,26 +1,34 @@
 # main.py
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+import asyncio
+from signalbot.collector import fetch_group_messages
+from signalbot.parser import extract_signal
+from signalbot.signal_executor import send_signal_to_telegram
+from signalbot.storage import save_messages_to_json
 
-app = FastAPI(title="SignalBot Core", version="0.1.0")
+async def run(group: str):
+    print(f"📡 Scanning group: {group}")
+    messages = await fetch_group_messages(group_username=group, limit=25)
 
-# Optional CORS middleware (allowing all for dev purposes)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Update with frontend domain in prod
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+    if not messages:
+        print("❌ No messages found.")
+        return
 
-@app.get("/")
-def root():
-    return {"message": "SignalBot is live 🟢"}
+    # Save raw messages
+    save_messages_to_json(messages, filename=group)
 
-# You can later add routes here from:
-# - sentibot sentiment scanner
-# - signalbot evaluator
-# - guard filters
-# - telegram push
-# - historical signal logs
+    for msg in messages:
+        signal = extract_signal(msg["text"], source=group)
+        if signal:
+            print("✅ Parsed signal:")
+            print(signal.formatted())
+            sent = send_signal_to_telegram(signal.formatted())
+            if sent:
+                print("🚀 Signal sent to Telegram!")
+            else:
+                print("⚠️ Failed to send to Telegram.")
+        else:
+            print("➖ No valid signal found in message.")
+
+if __name__ == "__main__":
+    asyncio.run(run("USABitcoinArmy"))
