@@ -4,6 +4,9 @@ import os
 from dotenv import load_dotenv
 from telethon.sync import TelegramClient
 from telethon.tl.types import PeerChannel
+from typing import List, Dict
+from datetime import datetime
+from signalbot.storage import save_messages_to_json
 
 load_dotenv()
 
@@ -12,7 +15,7 @@ API_HASH = os.getenv("TELEGRAM_API_HASH")
 
 client = TelegramClient("signalbot_session", API_ID, API_HASH)
 
-async def fetch_group_messages(group_username: str, limit: int = 10):
+async def fetch_group_messages(group_username: str, limit: int = 10) -> List[Dict]:
     await client.start()
     messages = []
     try:
@@ -35,7 +38,10 @@ if __name__ == "__main__":
     # Replace with any public group or channel username (e.g., 'USABitcoinArmy')
     group = "USABitcoinArmy"
     fetched = asyncio.run(fetch_group_messages(group))
-    
+
     print(f"✅ Pulled {len(fetched)} messages from @{group}")
     for msg in fetched:
-        print(f"📨 {msg['date']} | {msg['text'][:100]}")
+        print(f"📅 {msg['date']} | 📝 {msg['text'][:100]}")
+
+    filepath = save_messages_to_json(fetched, group)
+    print(f"📁 Messages saved to: {filepath}")
