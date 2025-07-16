@@ -1,0 +1,24 @@
+# signalbot/signal_executor.py
+
+from signalbot.signal_engine import Signal
+from telegram.push import send_signal_to_telegram
+
+# Example signal (you can dynamically create these later)
+signal = Signal(
+    token="BTC",
+    direction="long",
+    tp=[0.00023, 0.00036, 0.00093, 0.00041],
+    sl=0.000088,
+    leverage=25,
+    source="@USABitcoinArmy",
+    score=0.91
+)
+
+# Send it to Telegram
+message = signal.formatted()
+success = send_signal_to_telegram(message)
+
+if success:
+    print("✅ Signal pushed successfully!")
+else:
+    print("❌ Failed to push signal.")
